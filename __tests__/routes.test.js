@@ -46,11 +46,10 @@ describe('test routes', () => {
 
   // TESTS a new todo is created 
   test('returns a new todo task when creating a new todo', async(done) => {
-    // make fake request
+    // make fake post request
     const data = await fakeRequest(app)
       .post('/api/todos')
       .send(newTodoTask)
-      // set Authorization to the token 
       .set('Authorization', token)
       .expect('Content-Type', /json/)
       .expect(200);
@@ -72,6 +71,7 @@ describe('test routes', () => {
       },
     ];
 
+    // make fake GET req for all todos
     const data = await fakeRequest(app)
       .get('/api/todos')
       .set('Authorization', token)
@@ -99,6 +99,7 @@ describe('test routes', () => {
       user_id: 2
     }];
 
+    // make fake update PUT req
     const data = await fakeRequest(app)
       .put('/api/todos/4')
       .send(newTodo)
@@ -106,6 +107,7 @@ describe('test routes', () => {
       .expect('Content-Type', /json/)
       .expect(200);
     
+    // make fake GET req for all todos
     const allTodos = await fakeRequest(app)
       .get('/api/todos')
       .send(newTodo)
@@ -115,6 +117,28 @@ describe('test routes', () => {
 
     expect(data.body).toEqual(newTodo);
     expect(allTodos.body).toEqual(expectedAllTodoTasks);
+
+    done();
+  });
+
+  // DELETE test
+  test('delete one todo task hitting the DELETE /todos/:id endpoint', async(done) => {
+    // make delete req
+    await fakeRequest(app)
+      .delete('/api/todos/4')
+      .set('Authorization', token)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    // make fake GET req for all todos
+    const data = await fakeRequest(app)
+      .get('/api/todos/')
+      .set('Authorization', token)
+      .expect('Content-Type', /json/)
+      .expect(200);
+    
+    // expect an empty array of todos
+    expect(data.body).toEqual([]);  
 
     done();
   });
