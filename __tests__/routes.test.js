@@ -82,5 +82,40 @@ describe('test routes', () => {
 
     done();
   });
+  // TESTS PUT endpoint
+  test('updates one todo task for the user on PUT /todos/:id endpoint ', async(done) => {
+  
+    const newTodo = {
+      id: 4,
+      todo: 'get ice cream',
+      completed: true,
+      user_id: 2
+    };
 
+    const expectedAllTodoTasks = [{
+      id: 4,
+      todo: 'get ice cream',
+      completed: true,
+      user_id: 2
+    }];
+
+    const data = await fakeRequest(app)
+      .put('/api/todos/4')
+      .send(newTodo)
+      .set('Authorization', token)
+      .expect('Content-Type', /json/)
+      .expect(200);
+    
+    const allTodos = await fakeRequest(app)
+      .get('/api/todos')
+      .send(newTodo)
+      .set('Authorization', token)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(data.body).toEqual(newTodo);
+    expect(allTodos.body).toEqual(expectedAllTodoTasks);
+
+    done();
+  });
 });
