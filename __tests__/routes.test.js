@@ -61,4 +61,26 @@ describe('test routes', () => {
     done();
   });
 
+  // TESTS GET endpoint
+  test('returns all todos for the user on GET /todos', async(done) => {
+    const expected = [
+      {
+        id: 4,
+        todo: 'get ice cream',
+        completed: false,
+        user_id: 2
+      },
+    ];
+
+    const data = await fakeRequest(app)
+      .get('/api/todos')
+      .set('Authorization', token)
+      .expect('Content-Type', /json/)
+      .expect(200);
+    
+    expect(data.body).toEqual(expected);
+
+    done();
+  });
+
 });
